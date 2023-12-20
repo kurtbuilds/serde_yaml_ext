@@ -2,6 +2,11 @@
 name = "serde_yaml_ext"
 version = "0.1.0"
 edition = "2021"
+repository = "https://github.com/kurtbuilds/serde_yaml_ext"
+homepage = "https://github.com/kurtbuilds/serde_yaml_ext"
+description = "Extensions to make dealing with unstructured data easier"
+license = "MIT"
+documentation = "https://docs.rs/serde_yaml_ext"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
