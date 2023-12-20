@@ -1,4 +1,4 @@
-use serde_yaml::mapping::Index;
+use serde_yaml::mapping::{Index, Keys};
 use serde_yaml::Value;
 
 pub trait ValueExt {
@@ -7,10 +7,11 @@ pub trait ValueExt {
     fn path_mut(&mut self, path: &str) -> &mut Value;
     fn path(&self, path: &str) -> &Self;
     fn get_path(&self, path: &str) -> Option<&Value>;
-    fn get_path_mut(&mut self, path: &str) -> Option<&Value>;
+    fn get_path_mut(&mut self, path: &str) -> Option<&mut Value>;
     fn iter<'a>(&'a self) -> Box<dyn Iterator<Item=&'a Value> + 'a>;
     fn iter_mut<'a>(&'a mut self) -> Box<dyn Iterator<Item=&'a mut Value> +'a>;
     fn into_iter(self) -> Box<dyn Iterator<Item=Value>>;
+    fn keys(&self) -> serde_yaml::mapping::Keys;
 }
 
 impl ValueExt for Value {
@@ -63,7 +64,7 @@ impl ValueExt for Value {
         Some(value)
     }
 
-    fn get_path_mut(&mut self, path: &str) -> Option<&Self> {
+    fn get_path_mut(&mut self, path: &str) -> Option<&mut Self> {
         let mut value = self;
         for part in path.split('.') {
             if value.get(part).is_some() {
@@ -97,6 +98,13 @@ impl ValueExt for Value {
             Value::Sequence(seq) => Box::new(seq.into_iter()),
             Value::Mapping(map) => Box::new(map.into_values()),
             _ => panic!("Value must be map or seq to iterate (owned)"),
+        }
+    }
+
+    fn keys(&self) -> Keys {
+        match self {
+            Value::Mapping(map) => map.keys(),
+            _ => panic!("Value must be map to get keys"),
         }
     }
 }
